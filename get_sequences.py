@@ -1,3 +1,7 @@
+# This script uses an ID (organization or user) and a bbox as input
+# and it finds all the sequences of images belonging to that id.
+# The result is saved in a sequences_dataset.csv
+
 import csv
 import json
 import math
@@ -15,6 +19,7 @@ min_zoom = SETTINGS['min_zoom']
 max_zoom = SETTINGS['max_zoom']
 org_id   = SETTINGS['org_id']
 out_dir  = SETTINGS['out_dir']
+out_file = SETTINGS['seq_out_file']
 token    = SETTINGS['token']
 
 # check if valid to remove
@@ -34,7 +39,7 @@ output = {"type":"FeatureCollection","features":[]}
 sequences = set()
 organizations = set ()
 
-# We will also prepare a dataset with the following columns (for now).
+# We will also prepare a sequences dataset with the following columns (for now).
 # It will be a csv file.
 # - Organization id (org_id)
 # - Sequence id (seq_id)
@@ -130,7 +135,7 @@ with open(out_dir + os.path.sep + 'organizations_' + str(org_id) + '.txt', 'w') 
 # Create also an output file that will be the "dataset" holding in each row:
 # - Organization ID
 # - Sequence ID
-with open(out_dir + os.path.sep + 'dataset.csv', 'w') as outdat:
+with open(out_dir + os.path.sep + out_file, 'w') as outdat:
     writer = csv.writer(outdat)
     writer.writerow(dataset_header)
     for r in dataset_rows:

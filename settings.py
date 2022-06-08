@@ -3,6 +3,8 @@
 SETTINGS = {
     'org_id': 123456789876543,
     'output_folder': 'outputs',
+    'seq_out_file': 'seq_dataset.csv',
+    'img_out_file': 'img_dataset.csv',
     'token': 'MLY|1234567890123456|1234567890abcdef1234567890abcdef',
     'min_zoom': 1,
     'max_zoom': 14,
