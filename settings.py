@@ -35,6 +35,15 @@ SETTINGS = {
     'img_request_batch_size': 50,
 }
 
+
+# If you want to have redacted settings (e.g., have your application token
+# automatically applied without it being visible publicly), you can create
+# locally a "redacted.py" file, which is already git-ignored. In that file
+# (which is attempted to be sourced right below), you can override the
+# SETTINGS values. The following 2 lines are examples:
+# """redacted.py"""
+# SETTINGS['org_id'] = 987654321
+# SETTINGS['token']  = 'MLY|0123456789012345|01234567890abcdef01234567890abc'
 try:
     from redacted import *
 except ImportError:
