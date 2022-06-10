@@ -17,7 +17,6 @@ in_dir   = out_dir # Same directory
 out_file = SETTINGS['img_out_file']
 in_file  = SETTINGS['seq_out_file'] # input for images for our purpose is the output of sequences
 
-org_id   = SETTINGS['org_id']
 token    = SETTINGS['token']
 
 # Read the input csv file (sequences dataset)
@@ -60,10 +59,6 @@ if not os.path.isdir(out_dir):
     print("Output directory '{0}' doesn't exist. Creating ...".format(out_dir))
     os.mkdir(out_dir)
 
-
-# with open(out_dir + os.path.sep + 'sequences_' + str(org_id) + '.txt', 'w') as outseq:
-#     for sequence in sequences:
-#         outseq.write('%s\n' % sequence)
 
 # Create also an output file that will be the "dataset" holding in each row:
 # - Sequence ID
