@@ -18,7 +18,7 @@ start = time.time()
 min_zoom = SETTINGS['min_zoom']
 max_zoom = SETTINGS['max_zoom']
 org_id   = SETTINGS['org_id']
-out_dir  = SETTINGS['out_dir']
+out_dir  = SETTINGS['output_folder']
 out_file = SETTINGS['seq_out_file']
 token    = SETTINGS['token']
 
