@@ -3,7 +3,6 @@ import json
 import os
 import requests
 import time
-import pandas as pd
 import pdb
 from vt2geojson.tools import vt_bytes_to_geojson
 from settings import SETTINGS
@@ -31,9 +30,6 @@ token = SETTINGS['token']
 #   https://www.mapillary.com/developer/api-documentation/#image
 # To see/update which fields we'll be fetching and storing, check settings.py
 img_fields = SETTINGS['image_metadata_fields']
-
-# Read the image ids from the image dataset
-# images = pd.read_csv('./{0}{1}{2}'.format(in_dir,os.path.sep,in_file), sep=',')
 
 # Let's read the image dataset, as a list. Not as a pandas dataframe.
 with open('./{0}{1}{2}'.format(in_dir,os.path.sep,in_file), 'r') as images_obj:
@@ -125,3 +121,6 @@ with open(out_dir + os.path.sep + out_file, 'w') as outdat:
     writer.writerow(dataset_header)
     for r in dataset_rows:
         writer.writerow(r)
+
+end = time.time()
+print("Total time: {0}".format(end-start))
