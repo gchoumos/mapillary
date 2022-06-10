@@ -18,6 +18,8 @@ SETTINGS = {
         'ur_lon': 34.18,
     },
     'image_metadata_fields': [
+        'sequence',
+        'id',
         'captured_at',
         'compass_angle',
         # 'computed_compass_angle', # doesn't exist for all, so removed it
@@ -28,6 +30,9 @@ SETTINGS = {
         'width', # use this as a sketchy way to derive camera make
     ],
     'graph_endpoint': 'https://graph.mapillary.com',
+    # How many images to request for simultaneously
+    # If requesting with GET, then better not increase this value to more than 50
+    'img_request_batch_size': 50,
 }
 
 try:

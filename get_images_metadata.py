@@ -19,6 +19,9 @@ out_file = SETTINGS['img_meta_out_file']
 
 # Base image request url
 base_req_url = SETTINGS['graph_endpoint']
+# Fetching 50 image ids simultaneously is well within the get request length limit
+# (around 1250 chars). However, I should probably convert this to a POST request
+img_batch_size = SETTINGS['img_request_batch_size']
 
 # access token
 token = SETTINGS['token']
@@ -51,44 +54,64 @@ dataset_header = ['seq_id','img_id'] + [f for f in img_fields]
 dataset_rows = [] # will be a list of rows (list of lists)
 
 n_all_images = len(images_rows)
-n_processed_images = 1
-print('Fetching first image out of {0} total ...'.format(n_all_images))
-# Iterate through the image ids and get the metadata
-for r in images_rows:
-    # pdb.set_trace()
-    seq = r[images_header.index('seq_id')]
-    img = r[images_header.index('img_id')]
+n_processed_images = 0
+print('Fetching first {0} images out of {1} total ...'.format(img_batch_size, n_all_images))
 
-    if n_processed_images % 100 == 0:
-        print('Processed images: {0} out of {1} ...'.format(n_processed_images,n_all_images))
-    n_processed_images += 1
+# Iterate through the image ids, batch by batch, and get the metadata
+while n_processed_images < len(images_rows):
+    if n_processed_images > 0:
+        print("Fetching next batch ... Progress: {0} out of {1} images" \
+                .format(n_processed_images, n_all_images))
+    # Get all the image ids of the batch in a list
+    img_ids = [
+        # Should be the 2nd element, but let's make sure by checking the header for 'img_id'
+        x[images_header.index('img_id')]
+        for x in images_rows[n_processed_images:n_processed_images+img_batch_size]
+    ]
 
-    # build the request for this particular image
-    img_req_url = '{0}/{1}?access_token={2}&fields={3}' \
+    # build the request for this particular image batch
+    img_req_url = '{0}?ids={1}&fields={2}&access_token={3}' \
                     .format(
                         base_req_url,
-                        img,
-                        token,
-                        ','.join(img_fields)
+                        ','.join(img_ids),
+                        ','.join(img_fields),
+                        token
                     )
 
     # Send the request
     r = requests.get(img_req_url)
     assert r.status_code == 200, r.content
 
-    # if n_processed_images > 400:
-    #     break
-
     # Get the content of the response as a json element
     img_features = json.loads(r.content)
 
-    current_image_data = [seq,img]
-    # pdb.set_trace()
-    for field in img_fields:
-        current_image_data.append(img_features[field])
+    current_image_batch_data = []
+    # Iterate through the image ids and get the details from the json response
+    for img_id in img_ids:
+        cur_img_metadata = []
+        # Get the dictionary for this image
+        cur_img = img_features[img_id]
+        # Append the information we need
+        # For the moment (10/06/2022) they are the following
+        # ..................................................
+        # - 'sequence'      (for the sequence id)
+        # - 'id'            (for the image id)
+        # - 'captured_at'   (in unix ms)
+        # - 'compass_angle'
+        # - 'thumb_256_url'
+        # - 'width'
+        for field in img_fields:
+            cur_img_metadata.append(cur_img[field])
 
-    # append the current image data to the rows of the dataset we are creating
-    dataset_rows.append(current_image_data)
+        # append the current image data to the rows of the dataset we are creating
+        dataset_rows.append(cur_img_metadata)
+
+    # Update number of processed images for the next iteration
+    n_processed_images += img_batch_size
+
+    # TBR
+    # if n_processed_images > 400:
+    #     break
 
 
 # Create output directory if it doesn't exist
