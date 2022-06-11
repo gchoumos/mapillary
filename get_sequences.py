@@ -66,19 +66,12 @@ def check_tile(z1,x1,y1):
     if url in seen:
         return 1
     seen.append(url)
-    pdb.set_trace()
+
     r = requests.get(url)
     assert r.status_code == 200, r.content
     vt_content = r.content
 
     features = vt_bytes_to_geojson(vt_content, x1, y1, z1)
-
-    #
-    # GC: Write the json dump to check
-    with open("temp.json", "w") as outfile:
-        outfile.write(json.dumps(features))
-    #
-    #
 
     if str(org_id) in (json.dumps(features)):
         if z1<max_zoom:
