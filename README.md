@@ -107,13 +107,13 @@ In order for it to run properly, you have to make sure that the following settin
 
 Thus a use case scenario, is for an organization or user that wants to receive their images. They will
 1. Run the `get_sequences.py` script using their `user_id` or `organization_id` and specifying their bounding box of interest
-  * The result of the above execution is stored in the **_outputs_** folder (or however the user selects to change it) as **_seq_dataset.csv_**
+    * The result of the above execution is stored in the **_outputs_** folder (or however the user selects to change it) as **_seq_dataset.csv_**
 2. Run the `get_images.py` script, which will read the sequences from the **_seq_dataset.csv_** and fetch the image ids.
-  * The result of the above execution will be stored as **_img_dataset.csv_** in the **_outputs_** folder
+    * The result of the above execution will be stored as **_img_dataset.csv_** in the **_outputs_** folder
 3. Run the `get_images_metadata.py` script, which will read the image IDs from **_img_dataset.csv_** and fetch the metadata of these imges.
-  * The result of the above execution will be stored as **_img_meta_dataset.csv_**
+    * The result of the above execution will be stored as **_img_meta_dataset.csv_**
 4. Run the `download_images.py` script, which will download all the images, which are present in the **_img_meta_dataset.csv_** file
-  * The images will be downloaded according to the configured quality (see instructions above) in the directory `outputs/downloaded_images`
+    * The images will be downloaded according to the configured quality (see instructions above) in the directory `outputs/downloaded_images`
 
 This README file will be updated soon with more details. Let me know if you need specific instructions!
 
