@@ -8,6 +8,9 @@ import pandas as pd
 from vt2geojson.tools import vt_bytes_to_geojson
 from settings import SETTINGS
 
+# tools within this repo
+from mapillary_helper_tools import decode_geometry
+
 start = time.time()
 
 # Get settings
@@ -54,6 +57,9 @@ with open('./{0}{1}{2}'.format(in_dir,os.path.sep,in_file), 'r') as images_obj:
 # - field 1 (eg. captured_at)
 # - field 2 (eg. compass_angle)
 # - ... etc. (check settings)
+# - add the decoded geometry in the end
+#   (we get the geometry of a detection from the API, that is encoded as a base64
+#    string, and we decode it to get image-specific coordinates)
 dataset_header = ['img_id'] + [f for f in img_det_fields[1:]]
 dataset_rows = [] # will be a list of rows (list of lists)
 
@@ -119,6 +125,9 @@ while n_processed_images < len(images_rows):
             cur_detection.append(detection['id'])
             cur_detection.append(detection['value'])
             cur_detection.append(detection['geometry'])
+
+            # Decode the geometry to get the detection coordinates within the image
+            cur_detection.append(decode_geometry(detection['geometry']))
 
             # Another counter/information for the included detections (the ones we wanted to keep)
             n_included_detections += 1
