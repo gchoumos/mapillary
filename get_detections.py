@@ -120,14 +120,18 @@ while n_processed_images < len(images_rows):
             # - 'id'            (for the image id)
             # - 
             # - 'width'
+            # - 'height'
             cur_detection.append(cur_img['id'])
             cur_detection.append(cur_img['width'])
+            cur_detection.append(cur_img['height'])
             cur_detection.append(detection['id'])
             cur_detection.append(detection['value'])
             cur_detection.append(detection['geometry'])
 
             # Decode the geometry to get the detection coordinates within the image
-            cur_detection.append(decode_geometry(detection['geometry']))
+            # Send the width and the height of the original image, as they are needed
+            # for the detection coordinate normalization
+            cur_detection.append(decode_geometry(detection['geometry'],cur_img['width'],cur_img['height']))
 
             # Another counter/information for the included detections (the ones we wanted to keep)
             n_included_detections += 1

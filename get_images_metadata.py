@@ -105,7 +105,7 @@ while n_processed_images < len(images_rows):
     n_processed_images += len(img_ids)
 
     # TBR
-    # if n_processed_images > 400:
+    # if n_processed_images > 40:
     #     break
 
 

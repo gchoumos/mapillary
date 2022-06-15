@@ -6,7 +6,7 @@ SETTINGS = {
     'image_downloads_folder': 'downloaded_images',
     'seq_out_file': 'seq_dataset.csv',
     'img_out_file': 'img_dataset.csv',
-    'img_meta_out_file': 'img_meta_dataset_save.csv', # images with metadata
+    'img_meta_out_file': 'img_meta_dataset.csv', # images with metadata
     'detections_out_file': 'img_detections_dataset.csv', # detections of images
     'token': 'MLY|1234567890123456|1234567890abcdef1234567890abcdef',
     'min_zoom': 1,
@@ -35,6 +35,7 @@ SETTINGS = {
     'image_detections_fields': [
         'id',
         'width', # use this as a sketchy way to derive camera make
+        'height', # we also use width and height for the detection coordinate normalization
         'detections.id',
         'detections.value',
         'detections.geometry',
