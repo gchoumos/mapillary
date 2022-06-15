@@ -7,6 +7,7 @@ SETTINGS = {
     'seq_out_file': 'seq_dataset.csv',
     'img_out_file': 'img_dataset.csv',
     'img_meta_out_file': 'img_meta_dataset_save.csv', # images with metadata
+    'detections_out_file': 'img_detections_dataset.csv', # detections of images
     'token': 'MLY|1234567890123456|1234567890abcdef1234567890abcdef',
     'min_zoom': 1,
     'max_zoom': 14,
@@ -30,10 +31,24 @@ SETTINGS = {
         # 'thumb_original_url',
         'width', # use this as a sketchy way to derive camera make
     ],
+    'image_detections_fields': [
+        'id',
+        'width', # use this as a sketchy way to derive camera make
+        'detections.id',
+        'detections.value',
+        'detections.geometry',
+    ],
+    'detections_to_keep': [
+        'nature--terrain',
+        'nature--vegetation',
+        'nature--water'
+    ],
     'graph_endpoint': 'https://graph.mapillary.com',
     # How many images to request for simultaneously
     # If requesting with GET, then better not increase this value to more than 50
     'img_request_batch_size': 50,
+    # How many images to request detections for simultaneously
+    'img_detections_batch_size': 20,
     # Potential quality values: 256, 1024, 2048, original
     # Note that in order for a value to work (e.g. 256), it must be present in the
     # images metadata csv. If it's not available, then the scripts should be run

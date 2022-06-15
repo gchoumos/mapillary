@@ -81,7 +81,6 @@ while n_processed_images < len(images_rows):
     # Get the content of the response as a json element
     img_features = json.loads(r.content)
 
-    current_image_batch_data = []
     # Iterate through the image ids and get the details from the json response
     for img_id in img_ids:
         cur_img_metadata = []
@@ -103,7 +102,7 @@ while n_processed_images < len(images_rows):
         dataset_rows.append(cur_img_metadata)
 
     # Update number of processed images for the next iteration
-    n_processed_images += img_batch_size
+    n_processed_images += len(img_ids)
 
     # TBR
     # if n_processed_images > 400:
@@ -122,5 +121,6 @@ with open(out_dir + os.path.sep + out_file, 'w') as outdat:
     for r in dataset_rows:
         writer.writerow(r)
 
+print("Total images processed: {0}".format(n_processed_images))
 end = time.time()
 print("Total time: {0}".format(end-start))
