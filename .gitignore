@@ -1,4 +1,5 @@
 redacted.py
 outputs/
 .DS_Store
+__pycache__
 
