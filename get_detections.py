@@ -60,7 +60,7 @@ with open('./{0}{1}{2}'.format(in_dir,os.path.sep,in_file), 'r') as images_obj:
 # - add the decoded geometry in the end
 #   (we get the geometry of a detection from the API, that is encoded as a base64
 #    string, and we decode it to get image-specific coordinates)
-dataset_header = ['img_id'] + [f for f in img_det_fields[1:]]
+dataset_header = ['img_id'] + [f for f in img_det_fields[1:]] + ['decoded_geometry']
 dataset_rows = [] # will be a list of rows (list of lists)
 
 n_all_images = len(images_rows)
