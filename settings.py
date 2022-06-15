@@ -30,6 +30,7 @@ SETTINGS = {
         # 'thumb_2048_url',
         # 'thumb_original_url',
         'width', # use this as a sketchy way to derive camera make
+        'height', # we will also need the height for the coordinate normalization of detections
     ],
     'image_detections_fields': [
         'id',
