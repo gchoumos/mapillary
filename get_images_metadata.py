@@ -46,7 +46,7 @@ with open('./{0}{1}{2}'.format(in_dir,os.path.sep,in_file), 'r') as images_obj:
 # - field 1 (eg. captured_at)
 # - field 2 (eg. compass_angle)
 # - ... etc. (check settings)
-dataset_header = ['seq_id','img_id'] + [f for f in img_fields]
+dataset_header = ['seq_id','img_id'] + [f for f in img_fields[2:]]
 dataset_rows = [] # will be a list of rows (list of lists)
 
 n_all_images = len(images_rows)
