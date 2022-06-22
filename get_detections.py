@@ -34,7 +34,7 @@ token = SETTINGS['token']
 # documentation. Thus, I need to fetch them all, and filter them on the client side afterwards.
 # Check, though, if any kind of detection limit is in place, as it has been mentioned in the forum that
 # some people could only get 100 detections per image.
-#   UPDATE: It looks that more than 100 can be returned. Check this img id: 728019821979741
+#   UPDATE: It looks that more than 100 can be returned. Check this example img id: 728019821979741
 # Unfortunately, no list of all available detections exists. Thus, we cannot be sure that we indeed keep
 # everything we need
 detections_to_keep = SETTINGS['detections_to_keep']

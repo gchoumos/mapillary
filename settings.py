@@ -4,6 +4,7 @@ SETTINGS = {
     'org_id': 123456789876543,
     'output_folder': 'outputs',
     'image_downloads_folder': 'downloaded_images',
+    'image_detections_folder': 'images_with_detections',
     'seq_out_file': 'seq_dataset.csv',
     'img_out_file': 'img_dataset.csv',
     'img_meta_out_file': 'img_meta_dataset.csv', # images with metadata
@@ -28,7 +29,7 @@ SETTINGS = {
         'thumb_256_url',
         # 'thumb_1024_url',
         # 'thumb_2048_url',
-        # 'thumb_original_url',
+        'thumb_original_url',
         'width', # use this as a sketchy way to derive camera make
         'height', # we will also need the height for the coordinate normalization of detections
     ],
@@ -55,7 +56,7 @@ SETTINGS = {
     # Note that in order for a value to work (e.g. 256), it must be present in the
     # images metadata csv. If it's not available, then the scripts should be run
     # with the appropriate settings first.
-    'img_download_quality': '256',
+    'img_download_quality': 'original',
 }
 
 
