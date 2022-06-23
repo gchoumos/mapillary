@@ -44,8 +44,17 @@ SETTINGS = {
     'detections_to_keep': [
         'nature--terrain',
         'nature--vegetation',
-        'nature--water'
+        'nature--water',
+        # 'object--vehicle--car',
     ],
+    # Let's colour code the detections for better visualization
+    # This is in RGBA, and the last one is 128 for all, in order to be transparent
+    'detection_colours': {
+        'nature--terrain':      (165,42,42,128), # brown
+        'nature--vegetation':   (0,255,0,128),   # green
+        'nature--water':        (0,0,255,128),   # blue
+        'object--vehicle--car': (255,255,0,128), # yellow
+    },
     'graph_endpoint': 'https://graph.mapillary.com',
     # How many images to request for simultaneously
     # If requesting with GET, then better not increase this value to more than 50

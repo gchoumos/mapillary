@@ -80,10 +80,12 @@ for img in images_rows:
     cur_img_path = './{0}/{1}/{2}_{3}.jpg'.format(out_dir,out_img_dir,img[0],img_download_quality)
     cur_img = cv2.imread(cur_img_path)
     rgb_img = cv2.cvtColor(cur_img, cv2.COLOR_BGR2RGB)
-    plt.imshow(rgb_img)
-    plt.show()
+    # plt.imshow(rgb_img)
+    # plt.show()
     image = Image.open(cur_img_path)
     poly = Image.new('RGBA',image.size)
+    # keep them all in a list to merge/combine them into 1
+    cur_img_detection_geometries = []
     for det in detections_rows:
         # pdb.set_trace()
         # check if the current detection is of the current image
@@ -93,9 +95,25 @@ for img in images_rows:
             # to a list of this type [(x1,y1),(x2,y2)]
             geom = [(x,int(det[4])-y) for [x,y] in ast.literal_eval(det[3])]
             pdraw = ImageDraw.Draw(poly)
-            pdraw.polygon(geom,fill=(255,0,255,128),outline=(0,0,0,255))
-            image.paste(poly,mask=poly)
+            pdraw.polygon(geom,fill=SETTINGS['detection_colours'][det[2]],outline=(0,0,0,255))
+            # image.paste(poly,mask=poly)
+
+            # append to the geometries list for this image
+            cur_img_detection_geometries.append(geom)
+    # This was moved outside of the iteration, as we don't have to paste each time for
+    # each polygon but once for all of them
+    image.paste(poly,mask=poly)
+
+    fig = plt.figure(figsize=(13, 8))
+    fig.add_subplot(2,1,1)
+    plt.imshow(rgb_img)
+    plt.title('Initial image')
+
+    fig.add_subplot(2,1,2)
     plt.imshow(image)
+    plt.title('Image detections')
+
+    fig.tight_layout()
     plt.show()
 
     # pdb.set_trace()
