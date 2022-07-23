@@ -3,6 +3,15 @@
 
 This repository includes a set of easy-to-use Python scripts that interact with Mapillary API v4 and can do a set of basic and useful operations.
 
+#### For now the current functionalities developed include:
+1. Fetching image sequences of a user or organization
+2. Downloading image ids of user sequences based on the output of the previous (1)
+3. Downloading image metadata of images based on the output of the previous (2)
+4. Download the actual images on the given quality (configuratble through the settings file)
+5. Fetch image detections. The set of detections to fetch is configurable through the settings file
+6. Visualize detections on top of the downloaded images
+
+
 The `settings.py` file is defining a dictionary of settings, and each script is reading the ones it needs. Thus, to modify the inputs/settings for your needs (like changing the Mapillary token, the bounding box, etc.) you can modify the `settings.py` file. More information on the settings is shared later on.
 
 
