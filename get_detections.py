@@ -8,6 +8,8 @@ import pandas as pd
 from vt2geojson.tools import vt_bytes_to_geojson
 from settings import SETTINGS
 
+import pdb
+
 # tools within this repo
 from mapillary_helper_tools import decode_geometry
 
@@ -106,6 +108,8 @@ while n_processed_images < len(images_rows):
         cur_img = img_features[img_id]
 
         # Iterate through the image detections
+        if 'detections' not in cur_img.keys():
+            continue
         for detection in cur_img['detections']['data']:
 
             cur_detection = []

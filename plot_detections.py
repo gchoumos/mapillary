@@ -1,7 +1,6 @@
 
 import csv
 import os
-import wget
 import time
 from settings import SETTINGS
 
@@ -13,6 +12,10 @@ import ast
 from PIL import Image
 from PIL import ImageDraw
 
+from shapely.geometry import Polygon
+from shapely.ops import cascaded_union, unary_union
+import geopandas as gpd
+
 import pdb
 
 start = time.time()
@@ -23,6 +26,14 @@ in_dir   = out_dir # Same directory
 
 out_img_dir = SETTINGS['image_downloads_folder']
 out_det_dir = SETTINGS['image_detections_folder']
+
+# Here we'll store the images cropped according to the detections geometries
+out_cropped_dir = SETTINGS['image_cropped_detections_folder']
+# Create that directory if it doesn't already exist
+if not os.path.isdir(out_cropped_dir):
+    print("Output directory '{0}' for cropped images doesn't exist. Creating ...".format(out_cropped_dir))
+    os.mkdir(out_cropped_dir)
+
 # input files are the image detections output (from get_detections.py) and
 # the images metadata output (from get_images_metadata.py)
 detections_file  = SETTINGS['detections_out_file']
@@ -70,9 +81,10 @@ with open('./{0}{1}{2}'.format(in_dir,os.path.sep,detections_file), 'r') as dete
             x[det_det_value_index],
             x[det_decoded_geometry_index],
             x[det_height]
-        ] for x in detections[1:]
+        ] for x in detections[1:] # [1:] is just in order to skip the header
     ]
 
+n = 0
 
 # Now iterate over the images, get the detections and plot them
 for img in images_rows:
@@ -84,10 +96,9 @@ for img in images_rows:
     # plt.show()
     image = Image.open(cur_img_path)
     poly = Image.new('RGBA',image.size)
-    # keep them all in a list to merge/combine them into 1
-    cur_img_detection_geometries = []
+    # poly_mask = Image.new('RGBA',image.size)
+
     for det in detections_rows:
-        # pdb.set_trace()
         # check if the current detection is of the current image
         # det[0] and img[0] correspond both to the image id
         if det[0] == img[0]:
@@ -95,15 +106,15 @@ for img in images_rows:
             # to a list of this type [(x1,y1),(x2,y2)]
             geom = [(x,int(det[4])-y) for [x,y] in ast.literal_eval(det[3])]
             pdraw = ImageDraw.Draw(poly)
+            # pdraw_mask = ImageDraw.Draw(poly_mask)
             pdraw.polygon(geom,fill=SETTINGS['detection_colours'][det[2]],outline=(0,0,0,255))
-            # image.paste(poly,mask=poly)
+            # pdraw_mask.polygon(geom,fill=)
 
-            # append to the geometries list for this image
-            cur_img_detection_geometries.append(geom)
+
     # This was moved outside of the iteration, as we don't have to paste each time for
     # each polygon but once for all of them
     image.paste(poly,mask=poly)
-
+    pdb.set_trace()
     fig = plt.figure(figsize=(13, 8))
     fig.add_subplot(2,1,1)
     plt.imshow(rgb_img)
@@ -115,6 +126,43 @@ for img in images_rows:
 
     fig.tight_layout()
     plt.show()
+
+    if n > 5:
+        break
+    n += 1
+
+    # # Prepare to plot again, this time with merged polygons
+    # plt.clf()
+    # image = Image.open(cur_img_path)
+    # poly = Image.new('RGBA',image.size)
+    # #####
+    # # BLOCK START -The following block can become a tool in the mapillary_helper_tools.py script
+    # #####
+    # # Now merge all the geometries into 1
+    # cur_img_detection_geometries_poly = [Polygon(x) for x in cur_img_detection_geometries]
+    # cur_detections_merged = gpd.GeoSeries(unary_union(cur_img_detection_geometries_poly))
+    # # After this we will have ended up with a geopandas dataframe with multiple rows, each representing
+    # # a single polygon. That is normal as, when merging mulitple polygons, we will likely end up with
+    # # a multipolygon as a result. That is because it is not necessary that merging the multiple polygons
+    # # will lead to a single connected surface.
+    # img_final_polygons = cur_detections_merged.explode()
+    # # Now iterate over those polygons
+    # for p in img_final_polygons[0]:
+    #     # print("polygon coords: {0}".format(list(p.exterior.coords)))
+    #     # Get the coordinates in a list of type [(x1, y1), (x2, y2), ...]
+    #     cur_poly = list(p.exterior.coords)
+    #     # cur_poly = list(p.geometry)
+    #     # pdb.set_trace()
+    #     pdraw = ImageDraw.Draw(poly)
+    #     pdraw.polygon(cur_poly,fill=(255,0,255,128),outline=(0,0,0,255))
+    # # This was moved outside of the iteration, as we don't have to paste each time for
+    # # each polygon but once for all of them
+    # image.paste(poly,mask=poly)
+    # plt.imshow(image)
+    # plt.show()
+    # #######
+    # # BLOCK END
+    # #######
 
     # pdb.set_trace()
 

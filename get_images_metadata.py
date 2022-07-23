@@ -51,6 +51,8 @@ dataset_rows = [] # will be a list of rows (list of lists)
 
 n_all_images = len(images_rows)
 n_processed_images = 0
+n_errors = 0
+non_processed_images = []
 print('Fetching first {0} images out of {1} total ...'.format(img_batch_size, n_all_images))
 
 # Iterate through the image ids, batch by batch, and get the metadata
@@ -75,8 +77,30 @@ while n_processed_images < len(images_rows):
                     )
 
     # Send the request
+    # print("About to send request:\n{0}".format(img_req_url))
+    # if n_processed_images == 750:
+    #     print("Oh! That's where it breaks!")
+    #     for i in img_ids:
+    #         print("About to send request:\n{0}".format(img_req_url))
+    #         # build the request for this particular image batch
+    #         img_req_url = '{0}?ids={1}&fields={2}&access_token={3}' \
+    #                         .format(
+    #                             base_req_url,
+    #                             i,
+    #                             ','.join(img_fields),
+    #                             token
+    #                         )
+
+
     r = requests.get(img_req_url)
-    assert r.status_code == 200, r.content
+    try:
+        assert r.status_code == 200, r.content
+    except:
+        print("We have an error in this batch! Let's skip it for now")
+        n_processed_images += img_batch_size
+        n_errors += 1
+        non_processed_images += img_ids
+        continue
 
     # Get the content of the response as a json element
     img_features = json.loads(r.content)
@@ -108,6 +132,35 @@ while n_processed_images < len(images_rows):
     # if n_processed_images > 40:
     #     break
 
+non_existing = 0
+for img_id in non_processed_images:
+    try:
+        img_req_url = '{0}?ids={1}&fields={2}&access_token={3}' \
+            .format(
+                base_req_url,
+                img_id,
+                ','.join(img_fields),
+                token
+            )
+        r = requests.get(img_req_url)
+
+        # Get the content of the response as a json element
+        img_features = json.loads(r.content)
+
+        cur_img_metadata = []
+        # Get the dictionary for this image
+        cur_img = img_features[img_id]
+        for field in img_fields:
+            cur_img_metadata.append(cur_img[field])
+
+        # append the current image data to the rows of the dataset we are creating
+        dataset_rows.append(cur_img_metadata)
+    except:
+        non_existing += 1
+        print("Image {0} does not exist anymore.".format(img_id))
+        continue
+
+print("Total missing images: {0}".format(non_existing))
 
 # Create output directory if it doesn't exist
 if not os.path.isdir(out_dir):

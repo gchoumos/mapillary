@@ -5,12 +5,13 @@ SETTINGS = {
     'output_folder': 'outputs',
     'image_downloads_folder': 'downloaded_images',
     'image_detections_folder': 'images_with_detections',
+    'image_cropped_detections_folder': 'cropped_images',
     'seq_out_file': 'seq_dataset.csv',
     'img_out_file': 'img_dataset.csv',
     'img_meta_out_file': 'img_meta_dataset.csv', # images with metadata
     'detections_out_file': 'img_detections_dataset.csv', # detections of images
     'token': 'MLY|1234567890123456|1234567890abcdef1234567890abcdef',
-    'min_zoom': 1,
+    'min_zoom': 13,
     'max_zoom': 14,
     'AOI_bbox': {
         # Define the lower left (ll) / upper right (ur) latitude and longitude
@@ -45,7 +46,7 @@ SETTINGS = {
         'nature--terrain',
         'nature--vegetation',
         'nature--water',
-        # 'object--vehicle--car',
+        'object--vehicle--car',
     ],
     # Let's colour code the detections for better visualization
     # This is in RGBA, and the last one is 128 for all, in order to be transparent
@@ -54,6 +55,11 @@ SETTINGS = {
         'nature--vegetation':   (0,255,0,128),   # green
         'nature--water':        (0,0,255,128),   # blue
         'object--vehicle--car': (255,255,0,128), # yellow
+    },
+    # All the detections we want to include in our mask
+    'detection_masks': {
+        'nature--terrain':      1,
+        'nature--vegetation':   2,
     },
     'graph_endpoint': 'https://graph.mapillary.com',
     # How many images to request for simultaneously

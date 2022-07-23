@@ -33,7 +33,6 @@ def deg2num(lat_deg, lon_deg, zoom):
     ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
     return (xtile, ytile)
 
-output = {"type":"FeatureCollection","features":[]}
 # Let's set the following as set (pun intended) so that they are definitely unique
 # and we reduce the possibility of unnecessary requests (as quotas are in place)
 sequences = set()
@@ -54,7 +53,7 @@ if not os.path.isdir(out_dir):
 # There are 2 cases of requests to mapillary depending if using original (?)
 # or computed tiles. We will use the original, though I don't yet know the
 # actual difference (having tested it out of curiosity, the tiles returned
-# on my dummy example where the same)
+# on my dummy example were the same)
 mly_std = 'mly1_public'
 mly_comp = 'mly1_computed_public'
 
@@ -102,17 +101,17 @@ ur_lat = SETTINGS['AOI_bbox']['ur_lat']
 ur_lon = SETTINGS['AOI_bbox']['ur_lon']
 
  
-# Starting at level z (1)
-llx,lly = deg2num (ll_lat, ll_lon, z)
-urx,ury = deg2num (ur_lat, ur_lon, z)
+# Starting at level min_zoom (probably 1)
+llx, lly = deg2num (ll_lat, ll_lon, min_zoom)
+urx, ury = deg2num (ur_lat, ur_lon, min_zoom)
 output = {"type":"FeatureCollection","features":[]}
 print("Starting drill down of tiles from zoom level {0}, to zoom level {1}."
-    .format(z,max_zoom))
+    .format(min_zoom,max_zoom))
 print("Will focus and further zoom only if target id (user/organization) exists in the zoomed tile.")
 
 for x in range(min(llx,urx),max(llx,urx)+1,1):
     for y in range(min(lly,ury),max(lly,ury)+1,1):
-        check_tile(z,x,y)
+        check_tile(min_zoom,x,y)
 
 with open(out_dir + os.path.sep + str(org_id) + '.geojson', 'w') as outfile:
     json.dump(output, outfile)
